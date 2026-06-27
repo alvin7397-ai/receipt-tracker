@@ -28,7 +28,7 @@ body {
   padding-bottom: 40px;
 }
 
-/* ── Header ── */
+/* Header */
 header {
   background: var(--navy);
   color: #fff;
@@ -38,6 +38,7 @@ header {
   gap: 10px;
 }
 .header-title { font-size: 17px; font-weight: 700; white-space: nowrap; }
+.header-title span { opacity: .6; font-size: 13px; }
 .header-right { display: flex; align-items: center; gap: 8px; }
 #monthSelect {
   background: rgba(255,255,255,.15);
@@ -64,10 +65,10 @@ header {
 }
 .btn-icon:hover { background: rgba(255,255,255,.25); }
 
-/* ── Main ── */
+/* Main */
 main { max-width: 680px; margin: 0 auto; padding: 16px; }
 
-/* ── Upload card ── */
+/* Upload card */
 .upload-card {
   background: var(--card);
   border-radius: var(--radius);
@@ -93,7 +94,7 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
 #fileInput { display: none; }
 .upload-hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
 
-/* ── Import banner ── */
+/* Import banner */
 #importBanner {
   background: linear-gradient(135deg, #1F3864, #2E75B6);
   color: #fff;
@@ -117,7 +118,7 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
 }
 #btnImport:hover { background: rgba(255,255,255,.3); }
 
-/* ── Summary ── */
+/* Summary */
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -146,7 +147,7 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
 .total-card .t-label { font-size: 14px; opacity: .8; }
 .total-card .t-amount { font-size: 26px; font-weight: 700; }
 
-/* ── Entry list ── */
+/* Entry list */
 .section-header {
   font-size: 12px; font-weight: 700;
   color: var(--muted);
@@ -189,7 +190,7 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
   flex-shrink: 0;
 }
 
-/* ── Loading overlay ── */
+/* Loading overlay */
 #loadingOverlay {
   display: none;
   position: fixed; inset: 0;
@@ -210,7 +211,7 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Modal ── */
+/* Modal */
 .modal-bg {
   display: none;
   position: fixed; inset: 0;
@@ -293,7 +294,7 @@ select.field-input { appearance: none; cursor: pointer; }
 }
 .btn-save:hover { background: #256B44; }
 
-/* ── Toast ── */
+/* Toast */
 #toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
   background: #2D3748; color: #fff;
@@ -332,7 +333,7 @@ select.field-input { appearance: none; cursor: pointer; }
 
   <!-- June import banner -->
   <div id="importBanner" style="display:none">
-    <p>Import June 2026 historical data <small>Household, groceries, cat supplies &amp; more — 50+ entries</small></p>
+    <p>Import June 2026 history <small>Household, groceries, cat items &amp; more — 50+ entries</small></p>
     <button id="btnImport" onclick="importJune()">Import</button>
   </div>
 
@@ -359,7 +360,7 @@ select.field-input { appearance: none; cursor: pointer; }
 <!-- Loading -->
 <div id="loadingOverlay">
   <div class="spinner"></div>
-  <div id="loadingText">AI scanning receipt…</div>
+  <div id="loadingText">Scanning receipt with AI…</div>
 </div>
 
 <!-- Review modal -->
@@ -367,7 +368,7 @@ select.field-input { appearance: none; cursor: pointer; }
   <div class="modal" id="reviewModal">
     <div class="modal-drag"></div>
     <div class="modal-header">
-      <h2>Confirm Receipt</h2>
+      <h2>Review Receipt</h2>
       <div class="modal-meta">
         <span>Store:</span>
         <input class="meta-field" id="mStore" placeholder="Store name">
@@ -397,7 +398,7 @@ select.field-input { appearance: none; cursor: pointer; }
 
 <script>
 const CATEGORIES = {{ categories | tojson }};
-const CAT_META   = {{ cat_meta }};
+const CAT_META   = {{ cat_meta | safe }};
 
 let currentMonth = null;
 let allEntries   = [];
@@ -418,9 +419,7 @@ async function loadMonths() {
   const sorted = [...all].sort().reverse();
   sorted.forEach(m => {
     const [y, mo] = m.split('-');
-    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const label = `${monthNames[parseInt(mo)-1]} ${y}`;
-    const opt = new Option(label, m);
+    const opt = new Option(`${y} / ${parseInt(mo)}`, m);
     sel.appendChild(opt);
   });
   currentMonth = sel.value;
@@ -439,7 +438,8 @@ async function checkImportBanner() {
     document.getElementById('importBanner').style.display = 'none';
     return;
   }
-  document.getElementById('importBanner').style.display = allEntries.length === 0 ? 'flex' : 'none';
+  const count = allEntries.length;
+  document.getElementById('importBanner').style.display = count === 0 ? 'flex' : 'none';
 }
 
 function fmt(n) { return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -531,7 +531,7 @@ document.getElementById('fileInput').addEventListener('change', async function()
   const file = this.files[0];
   if (!file) return;
   this.value = '';
-  showLoading('AI scanning receipt…');
+  showLoading('Scanning receipt with AI…');
   try {
     const fd = new FormData();
     fd.append('image', file);
@@ -597,7 +597,7 @@ async function saveAll() {
     const data = await res.json();
     hideLoading();
     document.getElementById('reviewBg').classList.remove('show');
-    toast(`✓ Saved ${data.count} item${data.count !== 1 ? 's' : ''}`);
+    toast(`✓ Saved ${data.count } items`);
     await loadEntries();
   } catch(err) {
     hideLoading();
