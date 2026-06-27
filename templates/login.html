@@ -1,47 +1,93 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>登入 — 開支追蹤</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Expense Tracker — Login</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, Arial, sans-serif; background: #EEF2F7; min-height: 100vh;
-  display: flex; align-items: center; justify-content: center; }
-.card { background: #fff; border-radius: 16px; padding: 32px 28px; width: 100%; max-width: 360px;
-  box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+body {
+  font-family: -apple-system, Arial, sans-serif;
+  background: #EEF2F7;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 32px;
+  width: 100%; max-width: 360px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.10);
+  text-align: center;
+}
+.logo { font-size: 48px; margin-bottom: 12px; }
 h1 { font-size: 22px; color: #1F3864; margin-bottom: 6px; }
-p { color: #718096; font-size: 14px; margin-bottom: 24px; }
-label { display: block; font-size: 13px; font-weight: 600; color: #4A5568; margin-bottom: 6px; }
-input[type=password] { width: 100%; border: 1.5px solid #E2E8F0; border-radius: 8px;
-  padding: 11px 14px; font-size: 15px; outline: none; color: #1A202C; margin-bottom: 16px; }
-input[type=password]:focus { border-color: #2E75B6; }
-button { width: 100%; background: #1F3864; color: #fff; border: none; border-radius: 10px;
-  padding: 13px; font-size: 15px; font-weight: 600; cursor: pointer; }
+p  { font-size: 14px; color: #718096; margin-bottom: 28px; }
+input[type=password] {
+  width: 100%;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 16px;
+  outline: none;
+  color: #1A202C;
+  background: #EEF2F7;
+  transition: border-color .2s;
+  margin-bottom: 14px;
+  letter-spacing: 2px;
+}
+input[type=password]:focus { border-color: #2E75B6; background: #fff; }
+button {
+  width: 100%;
+  background: #1F3864;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 16px; font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+}
 button:hover { background: #2E75B6; }
-.error { color: #E53E3E; font-size: 13px; margin-top: 10px; display: none; }
+button:active { transform: scale(.98); }
+.error {
+  color: #E53E3E;
+  font-size: 13px;
+  margin-top: 10px;
+  min-height: 18px;
+}
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>🧾 開支追蹤</h1>
-  <p>請輸入密碼以繼續</p>
-  <label for="pw">密碼</label>
-  <input type="password" id="pw" placeholder="輸入密碼" autocomplete="current-password">
-  <button onclick="login()">進入</button>
-  <div class="error" id="err">密碼錯誤，請再試</div>
+  <div class="logo">🧾</div>
+  <h1>Expense Tracker</h1>
+  <p>Enter your password to continue</p>
+  <input type="password" id="pw" placeholder="Password" autofocus>
+  <button onclick="doLogin()">Enter</button>
+  <div class="error" id="err"></div>
 </div>
 <script>
-document.getElementById('pw').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
-async function login() {
+document.getElementById('pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+async function doLogin() {
   const pw = document.getElementById('pw').value;
-  const res = await fetch('/login', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({password: pw})
-  });
-  if (res.ok) { window.location.href = '/'; }
-  else { document.getElementById('err').style.display = 'block'; }
+  const err = document.getElementById('err');
+  err.textContent = '';
+  try {
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    if (res.ok) { window.location.href = '/'; }
+    else { err.textContent = 'Incorrect password. Try again.'; }
+  } catch(e) {
+    err.textContent = 'Connection error.';
+  }
 }
 </script>
 </body>
