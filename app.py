@@ -9,9 +9,9 @@ from openpyxl.utils import get_column_letter
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'change-this-in-production')
 
-DB_PATH   = os.environ.get('DB_PATH', os.path.join(os.path.dirname(__file__), 'expenses.db'))
+DB_PATH    = os.environ.get('DB_PATH', os.path.join(os.path.dirname(__file__), 'expenses.db'))
 GEMINI_KEY = os.environ.get('GEMINI_API_KEY', '')
-APP_PASS  = os.environ.get('APP_PASSWORD', '')
+APP_PASS   = os.environ.get('APP_PASSWORD', '')
 
 CATEGORIES = ['Household', 'Groceries', 'Dining Out', 'Cat Food', 'Cat Supplies', 'Subscriptions', 'Insurance', 'Income']
 
@@ -39,67 +39,67 @@ JUNE_DATA = {
         {'date':'2026/06/22','name':'ecoco Shoe Brush Set','store':'Tmall ecoco','amount':5.03,'note':'¥24.04 CNY @ 0.2092'},
         {'date':'2026/06/20','name':'BLUEAIR Blue Pure 511i Max Air Purifier','store':'Amazon','amount':139.99,'note':''},
         {'date':'2026/06/17','name':'BLUEAIR Blue Pure 511i Max Air Purifier','store':'Amazon','amount':149.99,'note':''},
-        {'date':'2026/06/17','name':'BLUEAIR Blue Pure 311i Max (Exchange)','store':'Amazon','amount':239.99,'note':'Replacement ordered'},
-        {'date':'2026/06/17','name':'Levoit Evaporative Humidifier (Exchange)','store':'Amazon','amount':329.89,'note':'Replacement ordered'},
+        {'date':'2026/06/17','name':'BLUEAIR Blue Pure 311i Max Air Purifier (exchange)','store':'Amazon','amount':239.99,'note':'Replacement ordered'},
+        {'date':'2026/06/17','name':'Levoit Evaporative Humidifier (exchange)','store':'Amazon','amount':329.89,'note':'Replacement ordered'},
         {'date':'2026/06/17','name':'eufy Indoor Cam E30 4K Security Camera','store':'Amazon','amount':69.89,'note':''},
     ],
     'Groceries': [
-        {'date':'2026/06/23','name':'Sunrise Sweet Soy Milk 1.89L','store':'T&T Supermarket','amount':5.67,'note':'On sale'},
-        {'date':'2026/06/23','name':'T&T Deposit + Env Fee + GST','store':'T&T Supermarket','amount':0.36,'note':'Deposit $0.25 + Env $0.10 + GST $0.01'},
+        {'date':'2026/06/23','name':'Sunrise Sweet Soy Milk 1.89L','store':'T&T Supermarket','amount':5.67,'note':'Sale price'},
+        {'date':'2026/06/23','name':'T&T Deposit + Eco Fee + GST','store':'T&T Supermarket','amount':0.36,'note':'Deposit $0.25 + Eco $0.10 + GST $0.01'},
         {'date':'2026/06/23','name':'Codorniu Limited Edition Brut Cava 750ml','store':'Wine & Beyond','amount':21.98,'note':''},
         {'date':'2026/06/23','name':'Wine & Beyond Deposit + GST','store':'Wine & Beyond','amount':1.20,'note':'Deposit $0.10 + GST $1.10'},
         {'date':'2026/06/22','name':'Split Wing Chicken Wings','store':'Costco','amount':28.79,'note':''},
         {'date':'2026/06/22','name':'Short Ribs','store':'Costco','amount':40.56,'note':''},
-        {'date':'2026/06/22','name':'Remedy Kombucha','store':'Costco','amount':19.99,'note':'Orig $24.99 discount -$5.00'},
+        {'date':'2026/06/22','name':'Remedy Kombucha','store':'Costco','amount':19.99,'note':'Reg $24.99 discount -$5.00'},
         {'date':'2026/06/22','name':'Coke 32x355ml','store':'Costco','amount':17.29,'note':''},
-        {'date':'2026/06/22','name':'Greek Yogurt','store':'Costco','amount':8.99,'note':'Orig $11.49 discount -$2.50'},
+        {'date':'2026/06/22','name':'Greek Yogurt','store':'Costco','amount':8.99,'note':'Reg $11.49 discount -$2.50'},
         {'date':'2026/06/22','name':'KS Tofu','store':'Costco','amount':7.99,'note':''},
         {'date':'2026/06/22','name':'Mini Bellas Mushrooms','store':'Costco','amount':5.99,'note':''},
         {'date':'2026/06/22','name':'Chicken Lasagna','store':'Costco','amount':19.49,'note':''},
         {'date':'2026/06/22','name':'Butter 454g','store':'Costco','amount':5.79,'note':''},
         {'date':'2026/06/22','name':'Costco Bottle Deposit + GST','store':'Costco','amount':6.86,'note':'Deposit $5.00 + GST $1.86'},
-        {'date':'2026/06/22','name':'Kronenbourg 1664 Blanc 6PK','store':'Wine & Beyond','amount':16.95,'note':'Orig $20.49 discount -$3.54'},
+        {'date':'2026/06/22','name':'Kronenbourg 1664 Blanc 6PK','store':'Wine & Beyond','amount':16.95,'note':'Reg $20.49 discount -$3.54'},
         {'date':'2026/06/22','name':'Chum Churum Yogurt 360ml','store':'Wine & Beyond','amount':11.99,'note':''},
         {'date':'2026/06/22','name':'Smirnoff Ice Light Peach Soda 4PK','store':'Wine & Beyond','amount':15.49,'note':''},
         {'date':'2026/06/22','name':'Wine & Beyond Deposit + GST','store':'Wine & Beyond','amount':3.32,'note':'Deposit $1.10 + GST $2.22'},
-        {'date':'2026/06/22','name':'Dried Pork Jerky XO Sauce x4','store':'Tmall','amount':11.67,'note':'¥55.80 CNY @ 0.2092'},
-        {'date':'2026/06/22','name':'Salt-Baked Chicken Wings Spicy x2','store':'Tmall','amount':33.49,'note':'¥160.10 CNY @ 0.2092'},
-        {'date':'2026/06/22','name':'Salt-Baked Chicken Wings Combo x1','store':'Tmall','amount':11.26,'note':'¥53.81 CNY @ 0.2092'},
+        {'date':'2026/06/22','name':'Jinjiang Pork Jerky 108g XO Sauce x4','store':'Tmall','amount':11.67,'note':'¥55.80 CNY @ 0.2092'},
+        {'date':'2026/06/22','name':'Wuqiong Salt-Baked Chicken Wings Spicy x2','store':'Tmall','amount':33.49,'note':'¥160.10 CNY @ 0.2092'},
+        {'date':'2026/06/22','name':'Wuqiong Salt-Baked Chicken Wings Combo x1','store':'Tmall','amount':11.26,'note':'¥53.81 CNY @ 0.2092'},
     ],
     'Dining Out': [
         {'date':'2026/06/22','name':'IKEA Restaurant Meatballs + Cod Fritters','store':'IKEA Restaurant','amount':31.99,'note':'incl. GST $1.52; free coffee -$1.50'},
     ],
     'Cat Food': [
-        {'date':'2026/06/21','name':'Inaba Churu Cat Treats x3','store':'','amount':12.58,'note':'Before tax $11.98 + GST $0.60'},
-        {'date':'2026/06/20','name':'Love Bugs Probiotic 40g','store':'','amount':38.84,'note':'Before tax $36.99 + GST $1.85'},
-        {'date':'2026/06/20','name':'Acana First Feast Dry Food','store':'','amount':31.49,'note':'Before tax $29.99 + GST $1.50'},
-        {'date':'2026/06/20','name':'Vital Chicken Hearts','store':'','amount':9.96,'note':'Before tax $9.49 + GST $0.47'},
-        {'date':'2026/06/20','name':'Vital Salmon Bites','store':'','amount':9.96,'note':'Before tax $9.49 + GST $0.47'},
-        {'date':'2026/06/20','name':'Kiti Canned Food x12','store':'','amount':26.25,'note':'Before tax $25.00 + GST $1.25'},
+        {'date':'2026/06/21','name':'Inaba Churu Cat Treats x3','store':'','amount':12.58,'note':'Pre-tax $11.98 + GST $0.60'},
+        {'date':'2026/06/20','name':'Love Bugs Probiotic 40g','store':'','amount':38.84,'note':'Pre-tax $36.99 + GST $1.85'},
+        {'date':'2026/06/20','name':'Acana First Feast Dry Food','store':'','amount':31.49,'note':'Pre-tax $29.99 + GST $1.50'},
+        {'date':'2026/06/20','name':'Vital Chicken Hearts','store':'','amount':9.96,'note':'Pre-tax $9.49 + GST $0.47'},
+        {'date':'2026/06/20','name':'Vital Salmon Bites','store':'','amount':9.96,'note':'Pre-tax $9.49 + GST $0.47'},
+        {'date':'2026/06/20','name':'Kiti Cat Food Cans x12','store':'','amount':26.25,'note':'Pre-tax $25.00 + GST $1.25'},
     ],
     'Cat Supplies': [
-        {'date':'2026/06/21','name':'PetSmart Cat Carrier','store':'PetSmart','amount':52.49,'note':'Before tax $49.99 + GST $2.50'},
-        {'date':'2026/06/21','name':"Skout's Honor Enzyme Cleaner",'store':'','amount':15.11,'note':'Before tax $14.39 + GST $0.72'},
-        {'date':'2026/06/21','name':'FELIWAY Pheromone Diffuser','store':'','amount':37.79,'note':'Before tax $35.99 + GST $1.80'},
+        {'date':'2026/06/21','name':'PetSmart Cat Carrier','store':'PetSmart','amount':52.49,'note':'Pre-tax $49.99 + GST $2.50'},
+        {'date':'2026/06/21','name':"Skout's Honor Enzyme Cleaner",'store':'','amount':15.11,'note':'Pre-tax $14.39 + GST $0.72'},
+        {'date':'2026/06/21','name':'FELIWAY Pheromone Diffuser','store':'','amount':37.79,'note':'Pre-tax $35.99 + GST $1.80'},
         {'date':'2026/06/20','name':'CHEERHOME PETS Sisal Cat Scratcher Bed','store':'Amazon','amount':43.69,'note':''},
-        {'date':'2026/06/20','name':'Cat Bell','store':'','amount':10.49,'note':'Before tax $9.99 + GST $0.50'},
-        {'date':'2026/06/19','name':'Cat Litter 1 Box','store':'','amount':37.80,'note':'Before tax $36.00 + GST $1.80'},
-        {'date':'2026/06/17','name':'Pieview Cat Litter Mat 76x61cm','store':'Amazon','amount':24.99,'note':''},
-        {'date':'2026/06/17','name':'WWVVPET Pet Nail Clipper with LED','store':'Amazon','amount':18.95,'note':''},
+        {'date':'2026/06/20','name':'Cat Bell','store':'','amount':10.49,'note':'Pre-tax $9.99 + GST $0.50'},
+        {'date':'2026/06/19','name':'Cat Litter 1 Box','store':'','amount':37.80,'note':'Pre-tax $36.00 + GST $1.80'},
+        {'date':'2026/06/17','name':'Pieviev Cat Litter Mat Trapper 76x61cm','store':'Amazon','amount':24.99,'note':''},
+        {'date':'2026/06/17','name':'WWVVPET Pet Nail Clipper with LED Light','store':'Amazon','amount':18.95,'note':''},
         {'date':'2026/06/17','name':'aumuca Cat Brush for Shedding','store':'Amazon','amount':19.99,'note':''},
         {'date':'2026/06/17','name':'OROLEY Stainless Steel Cat Litter Box XL','store':'Amazon','amount':59.27,'note':''},
         {'date':'2026/06/17','name':'PETLIBRO Automatic Cat Feeder 2L WiFi','store':'Amazon','amount':89.99,'note':''},
         {'date':'2026/06/17','name':'PETLIBRO Cat Water Fountain Dockstream 2','store':'Amazon','amount':84.87,'note':''},
-        {'date':'2026/06/22','name':'HomeSense Cat Toy','store':'HomeSense','amount':10.49,'note':'Before tax $9.99 + GST $0.50'},
-        {'date':'2026/06/22','name':'Cat Deshedding Comb','store':'Tmall','amount':1.71,'note':'¥8.17 CNY @ 0.2092'},
-        {'date':'2026/06/22','name':'Peekaboo Cat Food Silicone Spoon','store':'Taobao','amount':1.35,'note':'¥6.45 CNY @ 0.2092'},
+        {'date':'2026/06/22','name':'Home Sense Cat Toys','store':'HomeSense','amount':10.49,'note':'Pre-tax $9.99 + GST $0.50'},
+        {'date':'2026/06/22','name':'Cat Grooming Brush','store':'Tmall','amount':1.71,'note':'¥8.17 CNY @ 0.2092'},
+        {'date':'2026/06/22','name':'Peekaboo Silicone Cat Food Spoon','store':'Taobao','amount':1.35,'note':'¥6.45 CNY @ 0.2092'},
     ],
     'Subscriptions': [],
-    'Insurance': [],
-    'Income':   [],
+    'Insurance':     [],
+    'Income':        [],
 }
 
-# ── DB ────────────────────────────────────────────────────────────────────────
+# ── DB ───────────────────────────────────────────────────────────────────────
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -249,9 +249,9 @@ def list_entries():
 
 @app.route('/api/entries', methods=['POST'])
 def create_entries():
-    data   = request.json or {}
+    data    = request.json or {}
     entries = data.get('entries', [])
-    month  = data.get('month', datetime.now().strftime('%Y-%m'))
+    month   = data.get('month', datetime.now().strftime('%Y-%m'))
     ids = []
     with get_db() as conn:
         for e in entries:
@@ -373,7 +373,7 @@ def export_excel():
     ws.title = f'{year}-{mon}'
 
     ws.merge_cells('A1:F1')
-    ws['A1'] = f'Monthly Expense Report  —  {year} / {mon}'
+    ws['A1'] = f'Monthly Expenses  —  {year} / {mon}'
     ws['A1'].font = fn(bold=True, size=16, color=NAVY)
     ws['A1'].fill = fill('EBF0FA')
     ws['A1'].alignment = al('center')
@@ -381,11 +381,13 @@ def export_excel():
 
     for ci, (h, w) in enumerate(zip(
         ['Date', 'Item', 'Store / Source', 'Category', 'Amount (CAD)', 'Notes'],
-        [11, 36, 18, 12, 14, 20]
+        [11, 36, 18, 14, 14, 20]
     ), 1):
         c = ws.cell(row=2, column=ci, value=h)
         c.font = fn(bold=True, color=C['white'])
-        c.fill = fill(NAVY); c.alignment = al('center'); c.b/rder = bdr()
+        c.fill = fill(NAVY)
+        c.alignment = al('center')
+        c.border = bdr()
         ws.column_dimensions[get_column_letter(ci)].width = w
     ws.row_dimensions[2].height = 22
 
@@ -399,7 +401,9 @@ def export_excel():
         ws.merge_cells(f'A{row_cur}:F{row_cur}')
         c = ws.cell(row=row_cur, column=1, value=f'{icon}  {cat_label}')
         c.font = fn(bold=True, size=12, color=C['white'])
-        c.fill = fill(dark); c.alignment = al('left'); c.border = bdr()
+        c.fill = fill(dark)
+        c.alignment = al('left')
+        c.border = bdr()
         ws.row_dimensions[row_cur].height = 22
         row_cur += 1
         first = row_cur
@@ -414,19 +418,20 @@ def export_excel():
                 ws.cell(row=r, column=col).border = bdr()
                 ws.cell(row=r, column=col).font = fn()
 
-            ws.cell(row=r, column=1).value = e.get('date','')
+            ws.cell(row=r, column=1).value = e.get('date', '')
             ws.cell(row=r, column=1).alignment = al('center')
-            ws.cell(row=r, column=2).value = e.get('name','')
+            ws.cell(row=r, column=2).value = e.get('name', '')
             ws.cell(row=r, column=2).alignment = al('left')
-            ws.cell(row=r, column=3).value = e.get('store','')
+            ws.cell(row=r, column=3).value = e.get('store', '')
             ws.cell(row=r, column=3).alignment = al('left')
             ws.cell(row=r, column=4).value = cat_label
             ws.cell(row=r, column=4).font = fn(color='888888')
             ws.cell(row=r, column=4).alignment = al('center')
             amt = ws.cell(row=r, column=5)
             amt.value = e.get('amount') or None
-            amt.alignment = al('right'); amt.number_format = '#,##0.00'
-            ws.cell(row=r, column=6).value = e.get('note','')
+            amt.alignment = al('right')
+            amt.number_format = '#,##0.00'
+            ws.cell(row=r, column=6).value = e.get('note', '')
             ws.cell(row=r, column=6).alignment = al('left')
             ws.row_dimensions[r].height = 16
 
@@ -435,11 +440,16 @@ def export_excel():
 
         ws.merge_cells(f'A{row_cur}:D{row_cur}')
         c = ws.cell(row=row_cur, column=1, value=f'{cat_label} Subtotal')
-        c.font = fn(bold=True, color=C['white']); c.fill = fill(dark)
-        c.alignment = al('right'); c.border = bdr()
+        c.font = fn(bold=True, color=C['white'])
+        c.fill = fill(dark)
+        c.alignment = al('right')
+        c.border = bdr()
         sub = ws.cell(row=row_cur, column=5, value=f'=SUM(E{first}:E{last})')
-        sub.font = fn(bold=True, color=C['white']); sub.fill = fill(dark)
-        sub.alignment = al('right'); sub.number_format = '#,##0.00'; sub.border = bdr()
+        sub.font = fn(bold=True, color=C['white'])
+        sub.fill = fill(dark)
+        sub.alignment = al('right')
+        sub.number_format = '#,##0.00'
+        sub.border = bdr()
         ws.cell(row=row_cur, column=6).fill = fill(dark)
         ws.cell(row=row_cur, column=6).border = bdr()
         ws.row_dimensions[row_cur].height = 20
@@ -449,11 +459,16 @@ def export_excel():
     exp_row = row_cur
     ws.merge_cells(f'A{exp_row}:D{exp_row}')
     c = ws.cell(row=exp_row, column=1, value='Total Expenses')
-    c.font = fn(bold=True, size=12, color=C['white']); c.fill = fill(NAVY)
-    c.alignment = al('right'); c.border = bdr()
+    c.font = fn(bold=True, size=12, color=C['white'])
+    c.fill = fill(NAVY)
+    c.alignment = al('right')
+    c.border = bdr()
     et = ws.cell(row=exp_row, column=5, value='='+'+'.join(sub_refs))
-    et.font = fn(bold=True, size=12, color=C['white']); et.fill = fill(NAVY)
-    et.alignment = al('right'); et.number_format = '#,##0.00'; et.border = bdr()
+    et.font = fn(bold=True, size=12, color=C['white'])
+    et.fill = fill(NAVY)
+    et.alignment = al('right')
+    et.number_format = '#,##0.00'
+    et.border = bdr()
     ws.cell(row=exp_row, column=6).fill = fill(NAVY)
     ws.cell(row=exp_row, column=6).border = bdr()
     ws.row_dimensions[exp_row].height = 24
@@ -465,8 +480,10 @@ def export_excel():
 
     ws.merge_cells(f'A{row_cur}:F{row_cur}')
     c = ws.cell(row=row_cur, column=1, value=f'{inc_icon}  {inc_label}')
-    c.font = fn(bold=True, size=12, color=C['white']); c.fill = fill(inc_dark)
-    c.alignment = al('left'); c.border = bdr()
+    c.font = fn(bold=True, size=12, color=C['white'])
+    c.fill = fill(inc_dark)
+    c.alignment = al('left')
+    c.border = bdr()
     ws.row_dimensions[row_cur].height = 22
     row_cur += 1
     inc_first = row_cur
@@ -479,17 +496,21 @@ def export_excel():
             ws.cell(row=r, column=col).fill = fill(bg)
             ws.cell(row=r, column=col).border = bdr()
             ws.cell(row=r, column=col).font = fn()
-        ws.cell(row=r, column=1).value = e.get('date','')
+        ws.cell(row=r, column=1).value = e.get('date', '')
         ws.cell(row=r, column=1).alignment = al('center')
-        ws.cell(row=r, column=2).value = e.get('name','')
-        ws.cell(row=r, column=3).value = e.get('store','')
+        ws.cell(row=r, column=2).value = e.get('name', '')
+        ws.cell(row=r, column=2).alignment = al('left')
+        ws.cell(row=r, column=3).value = e.get('store', '')
+        ws.cell(row=r, column=3).alignment = al('left')
         ws.cell(row=r, column=4).value = 'Income'
         ws.cell(row=r, column=4).font = fn(color='888888')
         ws.cell(row=r, column=4).alignment = al('center')
         amt = ws.cell(row=r, column=5)
         amt.value = e.get('amount') or None
-        amt.alignment = al('right'); amt.number_format = '#,##0.00'
-        ws.cell(row=r, column=6).value = e.get('note','')
+        amt.alignment = al('right')
+        amt.number_format = '#,##0.00'
+        ws.cell(row=r, column=6).value = e.get('note', '')
+        ws.cell(row=r, column=6).alignment = al('left')
         ws.row_dimensions[r].height = 16
 
     inc_last = row_cur + inc_n - 1
@@ -497,11 +518,16 @@ def export_excel():
 
     ws.merge_cells(f'A{row_cur}:D{row_cur}')
     c = ws.cell(row=row_cur, column=1, value='Total Income')
-    c.font = fn(bold=True, size=12, color=C['white']); c.fill = fill(inc_dark)
-    c.alignment = al('right'); c.border = bdr()
+    c.font = fn(bold=True, size=12, color=C['white'])
+    c.fill = fill(inc_dark)
+    c.alignment = al('right')
+    c.border = bdr()
     inc_sub = ws.cell(row=row_cur, column=5, value=f'=SUM(E{inc_first}:E{inc_last})')
-    inc_sub.font = fn(bold=True, size=12, color=C['white']); inc_sub.fill = fill(inc_dark)
-    inc_sub.alignment = al('right'); inc_sub.number_format = '#,##0.00'; inc_sub.border = bdr()
+    inc_sub.font = fn(bold=True, size=12, color=C['white'])
+    inc_sub.fill = fill(inc_dark)
+    inc_sub.alignment = al('right')
+    inc_sub.number_format = '#,##0.00'
+    inc_sub.border = bdr()
     ws.cell(row=row_cur, column=6).fill = fill(inc_dark)
     ws.cell(row=row_cur, column=6).border = bdr()
     ws.row_dimensions[row_cur].height = 24
@@ -509,12 +535,17 @@ def export_excel():
     row_cur += 2
 
     ws.merge_cells(f'A{row_cur}:D{row_cur}')
-    c = ws.cell(row=row_cur, column=1, value='Net (Income - Expenses)')
-    c.font = fn(bold=True, size=13, color=C['white']); c.fill = fill(NAVY)
-    c.alignment = al('right'); c.border = bdr()
+    c = ws.cell(row=row_cur, column=1, value='Net Income / Expense')
+    c.font = fn(bold=True, size=13, color=C['white'])
+    c.fill = fill(NAVY)
+    c.alignment = al('right')
+    c.border = bdr()
     net = ws.cell(row=row_cur, column=5, value=f'={inc_ref}-E{exp_row}')
-    net.font = fn(bold=True, size=13, color=C['white']); net.fill = fill(NAVY)
-    net.alignment = al('right'); net.number_format = '#,##0.00'; net.border = bdr()
+    net.font = fn(bold=True, size=13, color=C['white'])
+    net.fill = fill(NAVY)
+    net.alignment = al('right')
+    net.number_format = '#,##0.00'
+    net.border = bdr()
     ws.cell(row=row_cur, column=6).fill = fill(NAVY)
     ws.cell(row=row_cur, column=6).border = bdr()
     ws.row_dimensions[row_cur].height = 28
@@ -526,7 +557,7 @@ def export_excel():
     return send_file(
         buf,
         as_attachment=True,
-        download_name=f'expenses_{year}_{mon}.xlsx',
+        download_name=f'Expenses_{year}_{mon}.xlsx',
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
 
