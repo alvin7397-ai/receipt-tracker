@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>開支追蹤器</title>
+<title>Expense Tracker</title>
 <style>
 :root {
   --navy:   #1F3864;
@@ -38,7 +38,6 @@ header {
   gap: 10px;
 }
 .header-title { font-size: 17px; font-weight: 700; white-space: nowrap; }
-.header-title span { opacity: .6; font-size: 13px; }
 .header-right { display: flex; align-items: center; gap: 8px; }
 #monthSelect {
   background: rgba(255,255,255,.15);
@@ -177,13 +176,13 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
 .entry-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .entry-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .entry-amount { font-size: 15px; font-weight: 700; white-space: nowrap; }
- .btn-del {
+.btn-del {
   background: none; border: none; cursor: pointer;
   color: #CBD5E0; font-size: 16px; padding: 2px 4px;
   transition: color .15s;
   line-height: 1;
 }
- .btn-del:hover { color: #E53E3E; }
+.btn-del:hover { color: #E53E3E; }
 .entry-date {
   font-size: 11px; color: var(--muted);
   min-width: 68px; text-align: right;
@@ -212,7 +211,7 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── Modal ── */
-.uodal-bg {
+.modal-bg {
   display: none;
   position: fixed; inset: 0;
   background: rgba(0,0,0,.5);
@@ -230,7 +229,7 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
   animation: slideUp .25s ease;
 }
 @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } }
-.modal-drag { width: 40px; height: 4px; background: #CBD5E0 ; border-radius: 2px; margin: 12px auto 16px; }
+.modal-drag { width: 40px; height: 4px; background: #CBD5E0; border-radius: 2px; margin: 12px auto 16px; }
 .modal-header {
   padding: 0 20px 16px;
   border-bottom: 1px solid var(--border);
@@ -269,19 +268,19 @@ main { max-width: 680px; margin: 0 auto; padding: 16px; }
   background: var(--bg);
 }
 .field-input:focus { border-color: var(--blue); background: #fff; }
- .amount-input { max-width: 80px; text-align: right; }
+.amount-input { max-width: 80px; text-align: right; }
 select.field-input { appearance: none; cursor: pointer; }
 .btn-remove-item {
-  background: none; border: none; color: #CBD5E0 ;
+  background: none; border: none; color: #CBD5E0;
   cursor: pointer; font-size: 16px; padding: 4px;
   transition: color .15s;
 }
- .btn-remove-item:hover { color: #E53E3E; }
+.btn-remove-item:hover { color: #E53E3E; }
 .modal-footer {
   padding: 16px 20px 0;
   display: flex; gap: 10px;
 }
- .btn-cancel {
+.btn-cancel {
   flex: 1; background: var(--bg); border: 1px solid var(--border);
   color: var(--muted); border-radius: 10px; padding: 13px;
   font-size: 15px; font-weight: 600; cursor: pointer;
@@ -295,15 +294,15 @@ select.field-input { appearance: none; cursor: pointer; }
 .btn-save:hover { background: #256B44; }
 
 /* ── Toast ── */
-$tNast {
+#toast {
   position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
   background: #2D3748; color: #fff;
   padding: 10px 20px; border-radius: 10px;
-  font-size: 14px; zQ-index: 600;
+  font-size: 14px; z-index: 600;
   opacity: 0; transition: opacity .25s;
   pointer-events: none; white-space: nowrap;
 }
-$toast.show { opacity: 1; }
+#toast.show { opacity: 1; }
 
 .empty-state {
   text-align: center; color: var(--muted);
@@ -314,10 +313,10 @@ $toast.show { opacity: 1; }
 <body>
 
 <header>
-  <div class="header-title">🧾 開支追蹤器</div>
+  <div class="header-title">🧾 Expense Tracker</div>
   <div class="header-right">
     <select id="monthSelect"></select>
-    <a id="btnExport" href="#" class="btn-icon" onclick="exportExcel(event)">📥</a>
+    <a id="btnExport" href="#" class="btn-icon" onclick="exportExcel(event)">📥 Export</a>
   </div>
 </header>
 
@@ -325,26 +324,26 @@ $toast.show { opacity: 1; }
   <!-- Upload -->
   <div class="upload-card">
     <label class="upload-btn" for="fileInput">
-      📷 编蓟 收據
+      📷 Upload Receipt
     </label>
     <input type="file" id="fileInput" accept="image/*" capture="environment">
-    <p class="upload-hint">支援 JPG / PNG · 自動識別品項與分類</p>
+    <p class="upload-hint">Supports JPG / PNG · AI auto-detects items &amp; categories</p>
   </div>
 
   <!-- June import banner -->
   <div id="importBanner" style="display:none">
-    <p>匯入 2026 年 6 月歷史資料 <small>家用品、食品、貓咪等 50+ 筆記錄</small></p>
-    <button id="btnImport" onclick="importJune()">匯入</button>
+    <p>Import June 2026 historical data <small>Household, groceries, cat supplies &amp; more — 50+ entries</small></p>
+    <button id="btnImport" onclick="importJune()">Import</button>
   </div>
 
   <!-- Total -->
   <div class="total-card">
     <div>
-      <div class="t-label">本月支出</div>
+      <div class="t-label">This Month's Spending</div>
       <div class="t-amount" id="totalAmount">$0.00</div>
     </div>
     <div style="text-align:right">
-      <div class="t-label">筆數</div>
+      <div class="t-label">Entries</div>
       <div style="font-size:22px;font-weight:700" id="totalCount">0</div>
     </div>
   </div>
@@ -353,14 +352,14 @@ $toast.show { opacity: 1; }
   <div class="summary-grid" id="summaryGrid"></div>
 
   <!-- Entry list -->
-  <div class="section-header">本月明細</div>
+  <div class="section-header">This Month's Details</div>
   <div id="entryList"></div>
 </main>
 
 <!-- Loading -->
 <div id="loadingOverlay">
   <div class="spinner"></div>
-  <div id="loadingText">AI 識別收據中…</div>
+  <div id="loadingText">AI scanning receipt…</div>
 </div>
 
 <!-- Review modal -->
@@ -368,28 +367,28 @@ $toast.show { opacity: 1; }
   <div class="modal" id="reviewModal">
     <div class="modal-drag"></div>
     <div class="modal-header">
-      <h2>確認收據資料</h2>
+      <h2>Confirm Receipt</h2>
       <div class="modal-meta">
-        <span>商店:</span>
-        <input class="meta-field" id="mStore" placeholder="商店名稱">
-        <span>日期:</span>
+        <span>Store:</span>
+        <input class="meta-field" id="mStore" placeholder="Store name">
+        <span>Date:</span>
         <input class="meta-field" id="mDate" placeholder="YYYY/MM/DD" style="max-width:120px">
       </div>
     </div>
     <table class="items-table">
       <thead>
         <tr>
-          <th>品項</th>
-          <th style="width:105px">分類</th>
-          <th style="width:80px">金額</th>
+          <th>Item</th>
+          <th style="width:120px">Category</th>
+          <th style="width:80px">Amount</th>
           <th style="width:28px"></th>
         </tr>
       </thead>
       <tbody id="itemRows"></tbody>
     </table>
     <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal()">取消</button>
-      <button class="btn-save" onclick="saveAll()">✓ 全部儲存</button>
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveAll()">✓ Save All</button>
     </div>
   </div>
 </div>
@@ -419,7 +418,9 @@ async function loadMonths() {
   const sorted = [...all].sort().reverse();
   sorted.forEach(m => {
     const [y, mo] = m.split('-');
-    const opt = new Option(`${y}���${parseInt(mo)}o��`, m);
+    const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const label = `${monthNames[parseInt(mo)-1]} ${y}`;
+    const opt = new Option(label, m);
     sel.appendChild(opt);
   });
   currentMonth = sel.value;
@@ -438,15 +439,13 @@ async function checkImportBanner() {
     document.getElementById('importBanner').style.display = 'none';
     return;
   }
-  const count = allEntries.length;
-  document.getElementById('importBanner').style.display = count === 0 ? 'flex' : 'none';
+  document.getElementById('importBanner').style.display = allEntries.length === 0 ? 'flex' : 'none';
 }
 
 function fmt(n) { return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 
 function renderSummary() {
-  const expenses = allEntries.filter(e => e.category !== '收入');
-  const income   = allEntries.filter(e => e.category === '收入');
+  const expenses = allEntries.filter(e => e.category !== 'Income');
   const total    = expenses.reduce((s,e) => s + (e.amount||0), 0);
   const count    = expenses.length;
   document.getElementById('totalAmount').textContent = fmt(total);
@@ -457,7 +456,7 @@ function renderSummary() {
 
   const grid = document.getElementById('summaryGrid');
   grid.innerHTML = '';
-  CATEGORIES.filter(c => c !== '收入').forEach(cat => {
+  CATEGORIES.filter(c => c !== 'Income').forEach(cat => {
     const m    = CAT_META[cat] || {};
     const amt  = bycat[cat] || 0;
     if (amt === 0) return;
@@ -476,18 +475,18 @@ function renderEntries() {
   list.innerHTML = '';
 
   if (allEntries.length === 0) {
-    list.innerHTML = '<div class="empty-state">📭 本月還沒有記錄<br>上傳第一張收據吧！</div>';
+    list.innerHTML = '<div class="empty-state">📭 No entries this month<br>Upload your first receipt!</div>';
     return;
   }
 
   const byCat = {};
   allEntries.forEach(e => {
-    const c = e.category || '其他';
+    const c = e.category || 'Other';
     if (!byCat[c]) byCat[c] = [];
     byCat[c].push(e);
   });
 
-  const catOrder = [...CATEGORIES, '其他'];
+  const catOrder = [...CATEGORIES, 'Other'];
   catOrder.forEach(cat => {
     const entries = byCat[cat];
     if (!entries || entries.length === 0) return;
@@ -515,7 +514,7 @@ function renderEntries() {
         <div class="entry-right">
           <div class="entry-date">${e.date||''}</div>
           <div class="entry-amount">${fmt(e.amount||0)}</div>
-          <button class="btn-del" onclick="deleteEntry(${e.id})" title="刪除">✕</button>
+          <button class="btn-del" onclick="deleteEntry(${e.id})" title="Delete">✕</button>
         </div>`;
       grp.appendChild(row);
     });
@@ -532,7 +531,7 @@ document.getElementById('fileInput').addEventListener('change', async function()
   const file = this.files[0];
   if (!file) return;
   this.value = '';
-  showLoading('AI 識別收據中…');
+  showLoading('AI scanning receipt…');
   try {
     const fd = new FormData();
     fd.append('image', file);
@@ -543,7 +542,7 @@ document.getElementById('fileInput').addEventListener('change', async function()
     showReviewModal(data);
   } catch(err) {
     hideLoading();
-    toast('❌ 上傳失敗: ' + err.message);
+    toast('❌ Upload failed: ' + err.message);
   }
 });
 
@@ -562,7 +561,7 @@ function addItemRow(tbody, item) {
     `<option value="${c}" ${c === item.category ? 'selected' : ''}>${c}</option>`
   ).join('');
   tr.innerHTML = `
-    <td><input class="field-input" value="${esc(item.name||'')}" placeholder="品項名稱"></td>
+    <td><input class="field-input" value="${esc(item.name||'')}" placeholder="Item name"></td>
     <td><select class="field-input">${catOpts}</select></td>
     <td><input class="field-input amount-input" type="number" step="0.01" min="0" value="${item.amount||0}"></td>
     <td><button class="btn-remove-item" onclick="this.closest('tr').remove()">✕</button></td>`;
@@ -574,7 +573,7 @@ function closeModal(e) {
   document.getElementById('reviewBg').classList.remove('show');
 }
 
-apync function saveAll() {
+async function saveAll() {
   const store = document.getElementById('mStore').value.trim();
   const date  = document.getElementById('mDate').value.trim();
   const rows  = document.querySelectorAll('#itemRows tr');
@@ -587,8 +586,8 @@ apync function saveAll() {
     if (!name) return;
     entries.push({ date, name, store, category: cat, amount });
   });
-  if (entries.length === 0) { toast('沒有品項可儲存'); return; }
-  showLoading('儲存中…');
+  if (entries.length === 0) { toast('No items to save'); return; }
+  showLoading('Saving…');
   try {
     const res = await fetch('/api/entries', {
       method: 'POST',
@@ -598,48 +597,48 @@ apync function saveAll() {
     const data = await res.json();
     hideLoading();
     document.getElementById('reviewBg').classList.remove('show');
-    toast(`✓ 已儲存 ${data.count} 筆`);
+    toast(`✓ Saved ${data.count} item${data.count !== 1 ? 's' : ''}`);
     await loadEntries();
   } catch(err) {
     hideLoading();
-    toast('❌ 儲存失敗');
+    toast('❌ Save failed');
   }
 }
 
 async function deleteEntry(id) {
-  if (!confirm('刪除這筆訨錄？')) return;
+  if (!confirm('Delete this entry?')) return;
   await fetch(`/api/entries/${id}`, { method: 'DELETE' });
-  toast('已刪除');
+  toast('Deleted');
   await loadEntries();
 }
 
 function exportExcel(e) {
   e.preventDefault();
   window.location.href = `/api/export?month=${currentMonth}`;
-  toast('📥 正在下載Excel…');
+  toast('📥 Downloading Excel…');
 }
 
 async function importJune() {
   document.getElementById('btnImport').disabled = true;
-  showLoading('匯入 6 月資料中…');
+  showLoading('Importing June data…');
   try {
     const res  = await fetch('/api/import-june', { method: 'POST' });
     const data = await res.json();
     hideLoading();
     if (data.error) { toast('❌ ' + data.error); }
     else {
-      toast(`✓ 匯入 ${data.count} 筆 6 月資料`);
+      toast(`✓ Imported ${data.count} June entries`);
       document.getElementById('importBanner').style.display = 'none';
       await loadEntries();
     }
   } catch(err) {
     hideLoading();
-    toast('❌ 匯入失敗');
+    toast('❌ Import failed');
   }
 }
 
 function showLoading(msg) {
-  document.getElementById('loadingText').textContent = msg || '處理中…';
+  document.getElementById('loadingText').textContent = msg || 'Processing…';
   document.getElementById('loadingOverlay').classList.add('show');
 }
 function hideLoading() {
