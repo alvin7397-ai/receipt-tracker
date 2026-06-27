@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>開支追蹤器</title>
+<style>
+:root {
+  --navy:   #1F3864;
+  --blue:   #2E75B6;
+  --blue-lt:#DEEAF1;
+  --bg:     #EEF2F7;
+  --card:   #FFFFFF;
+  --text:   #1A202C;
+  --muted:  #718096;
+  --border: #E2E8F0;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, 'Arial', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ── Header ── */
+header {
+  background: var(--navy);
+  color: #fff;
+  padding: 16px 20px 14px;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+}
+.header-title { font-size: 17px; font-weight: 700; white-space: nowrap; }
+.header-title span { opacity: .6; font-size: 13px; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+#monthSelect {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+#monthSelect option { background: var(--navy); }
+.btn-icon {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.3);
+  color: #fff;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: background .15s;
+}
+.btn-icon:hover { background: rgba(255,255,255,.25); }
+
+/* ── Main ── */
+main { max-width: 680px; margin: 0 auto; padding: 16px; }
+
+/* ── Upload card ── */
+.upload-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.upload-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #2E8B57;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 28px;
+  font-size: 16px; font-weight: 600;
+  cursor: pointer;
+  width: 100%; justify-content: center;
+  transition: background .15s, transform .1s;
+  touch-action: manipulation;
+}
+.upload-btn:active { transform: scale(.97); background: #256B44; }
+#fileInput { display: none; }
+.upload-hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+/* ── Import banner ── */
+#importBanner {
+  background: linear-gradient(135deg, #1F3864, #2E75B6);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: var(--shadow);
+}
+#importBanner p { font-size: 14px; }
+#importBanner p small { opacity: .8; font-size: 12px; display: block; margin-top: 2px; }
+#btnImport {
+  background: rgba(255,255,255,.2);
+  border: 1px solid rgba(255,255,255,.4);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s;
+}
+#btnImport:hover { background: rgba(255,255,255,.3); }
+
+/* ── Summary ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.summary-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid #ccc;
+}
+.summary-card .s-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+.summary-card .s-icon  { font-size: 16px; }
+.summary-card .s-amount { font-size: 18px; font-weight: 700; color: var(--text); }
+.total-card {
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.total-card .t-label { font-size: 14px; opacity: .8; }
+.total-card .t-amount { font-size: 26px; font-weight: 700; }
+
+/* ── Entry list ── */
+.section-header {
+  font-size: 12px; font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin: 20px 4px 8px;
+}
+.entry-group { margin-bottom: 12px; }
+.entry-group-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px 10px 0 0;
+  color: #fff;
+  font-weight: 700; font-size: 14px;
+}
+.entry-row {
+  background: var(--card);
+  display: flex; align-items: flex-start;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+  position: relative;
+}
+.entry-row:last-child { border-radius: 0 0 10px 10px; border-bottom: none; }
+.entry-info { flex: 1; min-width: 0; }
+.entry-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entry-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.entry-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.entry-amount { font-size: 15px; font-weight: 700; white-space: nowrap; }
+ .btn-del {
+  background: none; border: none; cursor: pointer;
+  color: #CBD5E0; font-size: 16px; padding: 2px 4px;
+  transition: color .15s;
+  line-height: 1;
+}
+ .btn-del:hover { color: #E53E3E; }
+.entry-date {
+  font-size: 11px; color: var(--muted);
+  min-width: 68px; text-align: right;
+  flex-shrink: 0;
+}
+
+/* ── Loading overlay ── */
+#loadingOverlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 500;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  color: #fff; font-size: 15px;
+}
+#loadingOverlay.show { display: flex; }
+.spinner {
+  width: 44px; height: 44px;
+  border: 4px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Modal ── */
+.uodal-bg {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 400;
+  align-items: flex-end; justify-content: center;
+}
+.modal-bg.show { display: flex; }
+.modal {
+  background: var(--card);
+  width: 100%; max-width: 640px;
+  border-radius: 20px 20px 0 0;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 0 0 32px;
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp { from { transform: translateY(40px); opacity: 0; } }
+.modal-drag { width: 40px; height: 4px; background: #CBD5E0 ; border-radius: 2px; margin: 12px auto 16px; }
+.modal-header {
+  padding: 0 20px 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+.modal-header h2 { font-size: 17px; margin-bottom: 4px; }
+.modal-meta { display: flex; gap: 12px; font-size: 13px; color: var(--muted); align-items: center; }
+.meta-field {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+  outline: none;
+  color: var(--text);
+  flex: 1;
+}
+.items-table { width: 100%; border-collapse: collapse; }
+.items-table th {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-align: left; padding: 8px 14px;
+  border-bottom: 2px solid var(--border);
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.items-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.items-table td:first-child { padding-left: 14px; }
+.items-table td:last-child  { padding-right: 14px; }
+.field-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+  outline: none;
+  color: var(--text);
+  background: var(--bg);
+}
+.field-input:focus { border-color: var(--blue); background: #fff; }
+ .amount-input { max-width: 80px; text-align: right; }
+select.field-input { appearance: none; cursor: pointer; }
+.btn-remove-item {
+  background: none; border: none; color: #CBD5E0 ;
+  cursor: pointer; font-size: 16px; padding: 4px;
+  transition: color .15s;
+}
+ .btn-remove-item:hover { color: #E53E3E; }
+.modal-footer {
+  padding: 16px 20px 0;
+  display: flex; gap: 10px;
+}
+ .btn-cancel {
+  flex: 1; background: var(--bg); border: 1px solid var(--border);
+  color: var(--muted); border-radius: 10px; padding: 13px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.btn-save {
+  flex: 2; background: #2E8B57; border: none;
+  color: #fff; border-radius: 10px; padding: 13px;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: background .15s;
+}
+.btn-save:hover { background: #256B44; }
+
+/* ── Toast ── */
+$tNast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #2D3748; color: #fff;
+  padding: 10px 20px; border-radius: 10px;
+  font-size: 14px; zQ-index: 600;
+  opacity: 0; transition: opacity .25s;
+  pointer-events: none; white-space: nowrap;
+}
+$toast.show { opacity: 1; }
+
+.empty-state {
+  text-align: center; color: var(--muted);
+  padding: 40px 20px; font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">🧾 開支追蹤器</div>
+  <div class="header-right">
+    <select id="monthSelect"></select>
+    <a id="btnExport" href="#" class="btn-icon" onclick="exportExcel(event)">📥</a>
+  </div>
+</header>
+
+<main>
+  <!-- Upload -->
+  <div class="upload-card">
+    <label class="upload-btn" for="fileInput">
+      📷 编蓟 收據
+    </label>
+    <input type="file" id="fileInput" accept="image/*" capture="environment">
+    <p class="upload-hint">支援 JPG / PNG · 自動識別品項與分類</p>
+  </div>
+
+  <!-- June import banner -->
+  <div id="importBanner" style="display:none">
+    <p>匯入 2026 年 6 月歷史資料 <small>家用品、食品、貓咪等 50+ 筆記錄</small></p>
+    <button id="btnImport" onclick="importJune()">匯入</button>
+  </div>
+
+  <!-- Total -->
+  <div class="total-card">
+    <div>
+      <div class="t-label">本月支出</div>
+      <div class="t-amount" id="totalAmount">$0.00</div>
+    </div>
+    <div style="text-align:right">
+      <div class="t-label">筆數</div>
+      <div style="font-size:22px;font-weight:700" id="totalCount">0</div>
+    </div>
+  </div>
+
+  <!-- Category summary -->
+  <div class="summary-grid" id="summaryGrid"></div>
+
+  <!-- Entry list -->
+  <div class="section-header">本月明細</div>
+  <div id="entryList"></div>
+</main>
+
+<!-- Loading -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div id="loadingText">AI 識別收據中…</div>
+</div>
+
+<!-- Review modal -->
+<div class="modal-bg" id="reviewBg" onclick="closeModal(event)">
+  <div class="modal" id="reviewModal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <h2>確認收據資料</h2>
+      <div class="modal-meta">
+        <span>商店:</span>
+        <input class="meta-field" id="mStore" placeholder="商店名稱">
+        <span>日期:</span>
+        <input class="meta-field" id="mDate" placeholder="YYYY/MM/DD" style="max-width:120px">
+      </div>
+    </div>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>品項</th>
+          <th style="width:105px">分類</th>
+          <th style="width:80px">金額</th>
+          <th style="width:28px"></th>
+        </tr>
+      </thead>
+      <tbody id="itemRows"></tbody>
+    </table>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">取消</button>
+      <button class="btn-save" onclick="saveAll()">✓ 全部儲存</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const CATEGORIES = {{ categories | tojson }};
+const CAT_META   = {{ cat_meta }};
+
+let currentMonth = null;
+let allEntries   = [];
+
+async function init() {
+  await loadMonths();
+  await loadEntries();
+  await checkImportBanner();
+}
+
+async function loadMonths() {
+  const res = await fetch('/api/months');
+  const months = await res.json();
+  const sel = document.getElementById('monthSelect');
+  sel.innerHTML = '';
+  const now = new Date().toISOString().slice(0,7);
+  const all = new Set([...months, now]);
+  const sorted = [...all].sort().reverse();
+  sorted.forEach(m => {
+    const [y, mo] = m.split('-');
+    const opt = new Option(`${y}���${parseInt(mo)}o��`, m);
+    sel.appendChild(opt);
+  });
+  currentMonth = sel.value;
+  sel.addEventListener('change', () => { currentMonth = sel.value; loadEntries(); checkImportBanner(); });
+}
+
+async function loadEntries() {
+  const res = await fetch(`/api/entries?month=${currentMonth}`);
+  allEntries = await res.json();
+  renderSummary();
+  renderEntries();
+}
+
+async function checkImportBanner() {
+  if (currentMonth !== '2026-06') {
+    document.getElementById('importBanner').style.display = 'none';
+    return;
+  }
+  const count = allEntries.length;
+  document.getElementById('importBanner').style.display = count === 0 ? 'flex' : 'none';
+}
+
+function fmt(n) { return '$' + Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+function renderSummary() {
+  const expenses = allEntries.filter(e => e.category !== '收入');
+  const income   = allEntries.filter(e => e.category === '收入');
+  const total    = expenses.reduce((s,e) => s + (e.amount||0), 0);
+  const count    = expenses.length;
+  document.getElementById('totalAmount').textContent = fmt(total);
+  document.getElementById('totalCount').textContent  = count;
+
+  const bycat = {};
+  expenses.forEach(e => { bycat[e.category] = (bycat[e.category]||0) + (e.amount||0); });
+
+  const grid = document.getElementById('summaryGrid');
+  grid.innerHTML = '';
+  CATEGORIES.filter(c => c !== '收入').forEach(cat => {
+    const m    = CAT_META[cat] || {};
+    const amt  = bycat[cat] || 0;
+    if (amt === 0) return;
+    const card = document.createElement('div');
+    card.className = 'summary-card';
+    card.style.borderLeftColor = '#' + m.dark;
+    card.innerHTML = `
+      <div class="s-label"><span class="s-icon">${m.icon||''}</span> ${cat}</div>
+      <div class="s-amount">${fmt(amt)}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function renderEntries() {
+  const list = document.getElementById('entryList');
+  list.innerHTML = '';
+
+  if (allEntries.length === 0) {
+    list.innerHTML = '<div class="empty-state">📭 本月還沒有記錄<br>上傳第一張收據吧！</div>';
+    return;
+  }
+
+  const byCat = {};
+  allEntries.forEach(e => {
+    const c = e.category || '其他';
+    if (!byCat[c]) byCat[c] = [];
+    byCat[c].push(e);
+  });
+
+  const catOrder = [...CATEGORIES, '其他'];
+  catOrder.forEach(cat => {
+    const entries = byCat[cat];
+    if (!entries || entries.length === 0) return;
+    const m = CAT_META[cat] || { dark: '718096', icon: '•' };
+
+    const grp = document.createElement('div');
+    grp.className = 'entry-group';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'entry-group-header';
+    hdr.style.background = '#' + m.dark;
+    const sub = entries.reduce((s,e) => s + (e.amount||0), 0);
+    hdr.innerHTML = `<span>${m.icon||''} ${cat}</span><span style="margin-left:auto">${fmt(sub)}</span>`;
+    grp.appendChild(hdr);
+
+    entries.forEach(e => {
+      const row = document.createElement('div');
+      row.className = 'entry-row';
+      const note = [e.store, e.note].filter(Boolean).join(' · ');
+      row.innerHTML = `
+        <div class="entry-info">
+          <div class="entry-name">${esc(e.name)}</div>
+          ${note ? `<div class="entry-sub">${esc(note)}</div>` : ''}
+        </div>
+        <div class="entry-right">
+          <div class="entry-date">${e.date||''}</div>
+          <div class="entry-amount">${fmt(e.amount||0)}</div>
+          <button class="btn-del" onclick="deleteEntry(${e.id})" title="刪除">✕</button>
+        </div>`;
+      grp.appendChild(row);
+    });
+
+    list.appendChild(grp);
+  });
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+document.getElementById('fileInput').addEventListener('change', async function() {
+  const file = this.files[0];
+  if (!file) return;
+  this.value = '';
+  showLoading('AI 識別收據中…');
+  try {
+    const fd = new FormData();
+    fd.append('image', file);
+    const res = await fetch('/api/parse', { method: 'POST', body: fd });
+    const data = await res.json();
+    hideLoading();
+    if (data.error) { toast('❌ ' + data.error); return; }
+    showReviewModal(data);
+  } catch(err) {
+    hideLoading();
+    toast('❌ 上傳失敗: ' + err.message);
+  }
+});
+
+function showReviewModal(data) {
+  document.getElementById('mStore').value = data.store || '';
+  document.getElementById('mDate').value  = data.date  || '';
+  const tbody = document.getElementById('itemRows');
+  tbody.innerHTML = '';
+  (data.items || []).forEach(item => addItemRow(tbody, item));
+  document.getElementById('reviewBg').classList.add('show');
+}
+
+function addItemRow(tbody, item) {
+  const tr = document.createElement('tr');
+  const catOpts = CATEGORIES.map(c =>
+    `<option value="${c}" ${c === item.category ? 'selected' : ''}>${c}</option>`
+  ).join('');
+  tr.innerHTML = `
+    <td><input class="field-input" value="${esc(item.name||'')}" placeholder="品項名稱"></td>
+    <td><select class="field-input">${catOpts}</select></td>
+    <td><input class="field-input amount-input" type="number" step="0.01" min="0" value="${item.amount||0}"></td>
+    <td><button class="btn-remove-item" onclick="this.closest('tr').remove()">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('reviewBg')) return;
+  document.getElementById('reviewBg').classList.remove('show');
+}
+
+apync function saveAll() {
+  const store = document.getElementById('mStore').value.trim();
+  const date  = document.getElementById('mDate').value.trim();
+  const rows  = document.querySelectorAll('#itemRows tr');
+  const entries = [];
+  rows.forEach(tr => {
+    const inputs = tr.querySelectorAll('input, select');
+    const name   = inputs[0].value.trim();
+    const cat    = inputs[1].value;
+    const amount = parseFloat(inputs[2].value) || 0;
+    if (!name) return;
+    entries.push({ date, name, store, category: cat, amount });
+  });
+  if (entries.length === 0) { toast('沒有品項可儲存'); return; }
+  showLoading('儲存中…');
+  try {
+    const res = await fetch('/api/entries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ entries, month: currentMonth })
+    });
+    const data = await res.json();
+    hideLoading();
+    document.getElementById('reviewBg').classList.remove('show');
+    toast(`✓ 已儲存 ${data.count} 筆`);
+    await loadEntries();
+  } catch(err) {
+    hideLoading();
+    toast('❌ 儲存失敗');
+  }
+}
+
+async function deleteEntry(id) {
+  if (!confirm('刪除這筆訨錄？')) return;
+  await fetch(`/api/entries/${id}`, { method: 'DELETE' });
+  toast('已刪除');
+  await loadEntries();
+}
+
+function exportExcel(e) {
+  e.preventDefault();
+  window.location.href = `/api/export?month=${currentMonth}`;
+  toast('📥 正在下載Excel…');
+}
+
+async function importJune() {
+  document.getElementById('btnImport').disabled = true;
+  showLoading('匯入 6 月資料中…');
+  try {
+    const res  = await fetch('/api/import-june', { method: 'POST' });
+    const data = await res.json();
+    hideLoading();
+    if (data.error) { toast('❌ ' + data.error); }
+    else {
+      toast(`✓ 匯入 ${data.count} 筆 6 月資料`);
+      document.getElementById('importBanner').style.display = 'none';
+      await loadEntries();
+    }
+  } catch(err) {
+    hideLoading();
+    toast('❌ 匯入失敗');
+  }
+}
+
+function showLoading(msg) {
+  document.getElementById('loadingText').textContent = msg || '處理中…';
+  document.getElementById('loadingOverlay').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('show');
+}
+
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+init();
+</script>
+</body>
+</html>
