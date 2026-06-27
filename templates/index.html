@@ -597,7 +597,7 @@ async function saveAll() {
     const data = await res.json();
     hideLoading();
     document.getElementById('reviewBg').classList.remove('show');
-    toast(`✓ Saved ${data.count } items`);
+    toast(`✓ Saved ${data.count} items`);
     await loadEntries();
   } catch(err) {
     hideLoading();
